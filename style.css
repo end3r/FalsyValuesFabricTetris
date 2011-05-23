@@ -8,9 +8,9 @@
 .tetrisPoints span, .tetrisPlay span { margin-left: 10px; width: 40px; float: right; text-align: right; }
 .tetrisBoard p.tetrisElement { background: #28deff; border: 1px solid #666; border-width: 0px 1px 1px 0px; }
 .tetrisBoard p.tetrisWall { background: #eee; border: 1px solid #333; border-width: 0px 1px 1px 0px; }
-.tetrisNextBoard { margin: 15px 0px 0px 10px; }
-.tetrisNextBoard p { border: 1px solid transparent; border-width: 0px 1px 1px 0px; width: 15px; height: 15px; float: left; font-size: 8px; }
-.tetrisNextBoard p.tetrisElement { background: #28deff; border: 1px solid #666; border-width: 0px 1px 1px 0px; }
+.tetrisBoardNext { margin: 15px 0px 0px 10px; }
+.tetrisBoardNext p { border: 1px solid transparent; border-width: 0px 1px 1px 0px; width: 15px; height: 15px; float: left; font-size: 8px; }
+.tetrisBoardNext p.tetrisElement { background: #28deff; border: 1px solid #666; border-width: 0px 1px 1px 0px; }
 .tetrisInfo { border: 1px solid #333; float: right; background: #000; opacity: 0.8; padding: 15px; }
 .tetrisNext { border: 1px solid #333; float: left; background: #000; opacity: 0.8; padding: 15px; margin-left: 30px; }
 .tetrisControls { border: 1px solid #333; background: #000; opacity: 0.8; padding: 15px; position: absolute; bottom: 20px; right: 20px; }

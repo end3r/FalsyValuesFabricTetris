@@ -13,18 +13,15 @@ function tetrisGame(id) {
 		self.dom = {
 			core: null,
 			board: null,
-			timer: null,
-			points: null,
-			next: null,
-			nextBoard: null,
+			boardNext: null,
 			controls: null,
 			play: null
 		};
 		self.data = {
 			boardWidth: 10,
 			boardHeight: 20,
-			nextBoardWidth: 4,
-			nextBoardHeight: 2,
+			boardNextWidth: 4,
+			boardNextHeight: 2,
 			counter: 0,
 			points: 0,
 			goal: 500,
@@ -35,7 +32,7 @@ function tetrisGame(id) {
 			element: [],
 			elementCount: 4,
 			board: [],
-			nextBoard: [],
+			boardNext: [],
 			obj: {
 				id: 0,
 				item: 0,
@@ -55,56 +52,25 @@ function tetrisGame(id) {
 
 		self.init = function(){
 			self.dom.core = document.getElementById(id);
-			var core = '';
+			var coreHTML = '';
 			console.log('init: '+id);
-		//	self.dom.bg = document.createElement('div');
-		//		self.dom.bg.className = 'tetrisBackground';
-		//		self.dom.bg.style.background = 'url(./img/booklet_12.jpg) no-repeat';
-			self.dom.bg = '<div class="tetrisBackground" id="tetrisBackground" style="background: url(./img/booklet_12.jpg) no-repeat">';
 
-		//	self.dom.info = document.createElement('div');
-		//		self.dom.info.className = 'tetrisInfo';
-			self.dom.info = '<div class="tetrisInfo">';
-
-		//	self.dom.board = document.createElement('div');
-		//		self.dom.board.className = 'tetrisBoard';
-		//		self.dom.board.style.width = 16*self.data.boardWidth;
-			self.dom.board = '<div class="tetrisBoard" id="tetrisBoard" style="width: '+16*self.data.boardWidth+'px;">';
-
-		//	self.dom.points = document.createElement('div');
-		//		self.dom.points.className = 'tetrisPoints';
-		//		self.dom.points.innerHTML = 'Punkty: <span>0</span>';
-			self.dom.points = '<div class="tetrisPoints">Points: <span id="tetrisPointsSpan">0</span>';
-
-		//	self.dom.next = document.createElement('div');
-		//		self.dom.next.className = 'tetrisNext';
-		//		self.dom.next.innerHTML = 'Następny klocek:';
-			self.dom.next = '<div class="tetrisNext">Next element:';
-
-		//	self.dom.nextBoard = document.createElement('div');
-		//		self.dom.nextBoard.className = 'tetrisNextBoard';
-		//		self.dom.nextBoard.style.width = 16*self.data.nextBoardWidth;
-			self.dom.nextBoard = '<div class="tetrisNextBoard" id="tetrisNextBoard" style="width: '+16*self.data.nextBoardWidth+'px;">';
-			
-			self.dom.next += self.dom.nextBoard;
-			self.dom.next += '</div>';
-			var controlString = '<p>Controls:</p></p>&nbsp;</p>' +
+			self.dom.info = '<div class="tetrisInfo">' +
+				'<div class="tetrisPlay" id="tetrisPlay">Game status: <span>pause</span></div>' +
+				'<div class="tetrisPoints">Points: <span id="tetrisPointsSpan">0</span></div>' +
+				'</div>';
+			self.dom.boardNext = '<div class="tetrisNext">Next element:' +
+				'<div class="tetrisBoardNext" id="tetrisBoardNext" style="width: '+16*self.data.boardNextWidth+'px;">' +
+				'</div>';
+			self.dom.controls = '<div class="tetrisControls">' +
+				'<p>Controls:</p></p>&nbsp;</p>' +
 				'<p>Enter - start &frasl; pause</p>' +
 				'<p>&uarr; &nbsp;&nbsp; - rotation</p>' +
 				'<p>&larr; &nbsp; - move left</p>' +
 				'<p>&rarr; &nbsp; - move right</p>' +
-				'<p>&darr; &nbsp;&nbsp; - speed up</p>';
-
-		//	self.dom.controls = document.createElement('div');
-		//		self.dom.controls.className = 'tetrisControls';
-		//		self.dom.controls.innerHTML = controlString;
-			self.dom.controls = '<div class="tetrisControls">'+controlString;
-
-		//	self.dom.play = document.createElement('div');
-		//		self.dom.play.className = 'tetrisPlay';
-		//		self.dom.play.innerHTML = 'Stan gry: <span>pauza</span>';
-			self.dom.play = '<div class="tetrisPlay">Game status: <span>pause</span>';
-
+				'<p>&darr; &nbsp;&nbsp; - speed up</p>' +
+				'</div>';
+/*
 			self.dom.play.toggle = function(trigger) {
 				if(trigger == 'on') {
 					self.dom.play = '<div class="tetrisPlay">Game status: <span>active</span></div>';
@@ -117,7 +83,8 @@ function tetrisGame(id) {
 					clearTimeout(self.data.timer);
 				}
 			};
-
+*/
+			self.dom.board = '<div class="tetrisBoard" id="tetrisBoard" style="width: '+16*self.data.boardWidth+'px;">';
 			for(var i=1; i<=self.data.boardHeight; i++) {
 				self.data.board[i] = [];
 				for(var j=1; j<=self.data.boardWidth; j++) {
@@ -125,26 +92,18 @@ function tetrisGame(id) {
 					self.dom.board += '<p id="board_'+i+'_'+j+'"></p>';
 				}
 			};
-			self.dom.board += '<div class="clear"></div>';
+			self.dom.board += '<div class="clear"></div>' + '</div>';
 
 			self.data.actualSpeed = self.data.defaultSpeed;
-			core += self.dom.bg;
-			core += '</div>';
-			self.dom.info += self.dom.play;
-			self.dom.info += '</div>';
-			self.dom.info += self.dom.points;
-			self.dom.info += '</div>';
-			core += self.dom.info;
-			core += '</div>';
-			core += self.dom.board;
-			core += '</div>';
-			core += self.dom.next;
-			core += '</div>';
-			core += self.dom.controls;
-			core += '</div>';
-			core += '<div class="clear"></div>';
+
+			coreHTML += '<div class="tetrisBackground" id="tetrisBackground" style="background: url(./img/booklet_12.jpg) no-repeat"></div>' +
+				self.dom.info +
+				self.dom.board +
+				self.dom.boardNext + '</div>' +
+				self.dom.controls +
+				'<div class="clear"></div>';
 			
-			self.dom.core.innerHTML = core;
+			self.dom.core.innerHTML = coreHTML;
 
 			self.createNewElement();
 			self.createNewElement();
@@ -178,11 +137,13 @@ function tetrisGame(id) {
 						event.preventDefault();
 						if(self.data.pause) { // unpause game
 							self.data.pause = false;
+							self.dom.play = document.getElementById('tetrisPlay');
 							self.dom.play.innerHTML = 'Game status: <span>active</span>';
 							self.data.timer = setTimeout(function(){ self.renderChange() }, self.data.actualSpeed);
 						}
 						else { // pause game
 							self.data.pause = true;
+							self.dom.play = document.getElementById('tetrisPlay');
 							self.dom.play.innerHTML = 'Game status: <span>pause</span>';
 							clearTimeout(self.data.timer);
 						}
@@ -250,29 +211,26 @@ function tetrisGame(id) {
 		};
 		
 		self.showNextElement = function() {
-			//self.dom.nextBoard.innerHTML = '';
-			var nextBoard = '';
-			for(var i=1; i<=self.data.nextBoardHeight; i++) {
-				self.data.nextBoard[i] = [];
-				for(var j=1; j<=self.data.nextBoardWidth; j++) {
-					self.data.nextBoard[i][j] = 0;
-					nextBoard += '<p id="nextBoard_'+i+'_'+j+'"></p>';
+			var boardNext = '';
+			for(var i=1; i<=self.data.boardNextHeight; i++) {
+				self.data.boardNext[i] = [];
+				for(var j=1; j<=self.data.boardNextWidth; j++) {
+					self.data.boardNext[i][j] = 0;
+					boardNext += '<p id="boardNext_'+i+'_'+j+'"></p>';
 				}
 			}
-			nextBoard += '<div class="clear"></div>';
-			self.dom.nextBoard = document.getElementById('tetrisNextBoard');
-			self.dom.nextBoard.innerHTML = nextBoard;
+			boardNext += '<div class="clear"></div>';
+			self.dom.boardNext = document.getElementById('tetrisBoardNext');
+			self.dom.boardNext.innerHTML = boardNext;
 
-			//document.getElementById('tetrisNext').innerHTML += self.dom.nextBoard.innerHTML;
 			var nextObj = self.data.storage[0];
 			var nextElement = nextObj.element;
 			for(var i = 0; i < self.data.elementCount; i++) {
 				var next_x = nextElement[i].x - nextObj.shift.x;
 				var next_y = nextElement[i].y - nextObj.shift.y;
-				self.dom.nextBoardElement = document.getElementById('nextBoard_'+next_x+'_'+next_y);
-					self.dom.nextBoardElement.className = 'tetrisElement';
+				self.dom.boardNextElement = document.getElementById('boardNext_'+next_x+'_'+next_y);
+					self.dom.boardNextElement.className = 'tetrisElement';
 			}
-			//alert(JSON.stringify(self.dom.nextBoard.innerHTML));
 		};
 		
 		self.renderChange = function() {
@@ -431,4 +389,5 @@ function tetrisGame(id) {
 			}
 		};
 	};
-new tetrisGame('tetrisContainer').init();
+var game = new tetrisGame('tetrisContainer');
+	game.init();
