@@ -1,6 +1,6 @@
 Falsy Fabric Tetris
 
-I took my own jQuery Tetris and converted it into Javascript. The next steps will include changing the structure of the code/files and apply the coding style from the Game Development workshop by porneL. After that DOM will be replaced with Cnavas, and then Fabric.js will be used. The last step is to add Falsy Values style - backgrounds, faces etc.
+I took my own jQuery Tetris and converted it into Javascript. The next steps will include changing the structure of the code/files and apply the coding style from the Game Development workshop by porneL. After that DOM will be replaced with Canvas, and then Fabric.js will be used. The last step is to add Falsy Values style - backgrounds, faces etc.
 
 For now it's a huge mess in the code, so, if you're reading this -  DON'T EVEN TRY to figure it out ;)
 

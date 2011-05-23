@@ -74,12 +74,12 @@ function tetrisGame(id) {
 		//	self.dom.points = document.createElement('div');
 		//		self.dom.points.className = 'tetrisPoints';
 		//		self.dom.points.innerHTML = 'Punkty: <span>0</span>';
-			self.dom.points = '<div class="tetrisPoints">Punkty: <span id="tetrisPointsSpan">0</span>';
+			self.dom.points = '<div class="tetrisPoints">Points: <span id="tetrisPointsSpan">0</span>';
 
 		//	self.dom.next = document.createElement('div');
 		//		self.dom.next.className = 'tetrisNext';
 		//		self.dom.next.innerHTML = 'Następny klocek:';
-			self.dom.next = '<div class="tetrisNext">Następny klocek:';
+			self.dom.next = '<div class="tetrisNext">Next element:';
 
 		//	self.dom.nextBoard = document.createElement('div');
 		//		self.dom.nextBoard.className = 'tetrisNextBoard';
@@ -88,12 +88,12 @@ function tetrisGame(id) {
 			
 			self.dom.next += self.dom.nextBoard;
 			self.dom.next += '</div>';
-			var controlString = '<p>Sterowanie:</p></p>&nbsp;</p>' +
-				'<p>Enter - start &frasl; pauza</p>' +
-				'<p>&uarr; &nbsp;&nbsp; - obrót klocka</p>' +
-				'<p>&larr; &nbsp; - ruch w lewo</p>' +
-				'<p>&rarr; &nbsp; - ruch w prawo</p>' +
-				'<p>&darr; &nbsp;&nbsp; - przyspieszenie</p>';
+			var controlString = '<p>Controls:</p></p>&nbsp;</p>' +
+				'<p>Enter - start &frasl; pause</p>' +
+				'<p>&uarr; &nbsp;&nbsp; - rotation</p>' +
+				'<p>&larr; &nbsp; - move left</p>' +
+				'<p>&rarr; &nbsp; - move right</p>' +
+				'<p>&darr; &nbsp;&nbsp; - speed up</p>';
 
 		//	self.dom.controls = document.createElement('div');
 		//		self.dom.controls.className = 'tetrisControls';
@@ -103,16 +103,16 @@ function tetrisGame(id) {
 		//	self.dom.play = document.createElement('div');
 		//		self.dom.play.className = 'tetrisPlay';
 		//		self.dom.play.innerHTML = 'Stan gry: <span>pauza</span>';
-			self.dom.play = '<div class="tetrisPlay">Stan gry: <span>pauza</span>';
+			self.dom.play = '<div class="tetrisPlay">Game status: <span>pause</span>';
 
 			self.dom.play.toggle = function(trigger) {
 				if(trigger == 'on') {
-					self.dom.play = '<div class="tetrisPlay">Stan gry: <span>aktywna</span></div>';
+					self.dom.play = '<div class="tetrisPlay">Game status: <span>active</span></div>';
 					self.data.pause = false;
 					self.data.timer = setTimeout(function(){ self.renderChange() }, self.data.actualSpeed);
 				}
 				else { // trigger == off
-					self.dom.play = '<div class="tetrisPlay">Stan gry: <span>pauza</span></div>';
+					self.dom.play = '<div class="tetrisPlay">Game status: <span>pause</span></div>';
 					self.data.pause = true;
 					clearTimeout(self.data.timer);
 				}
@@ -178,12 +178,12 @@ function tetrisGame(id) {
 						event.preventDefault();
 						if(self.data.pause) { // unpause game
 							self.data.pause = false;
-							self.dom.play.innerHTML = 'Stan gry: <span>aktywna</span>';
+							self.dom.play.innerHTML = 'Game status: <span>active</span>';
 							self.data.timer = setTimeout(function(){ self.renderChange() }, self.data.actualSpeed);
 						}
 						else { // pause game
 							self.data.pause = true;
-							self.dom.play.innerHTML = 'Stan gry: <span>pauza</span>';
+							self.dom.play.innerHTML = 'Game status: <span>pause</span>';
 							clearTimeout(self.data.timer);
 						}
 						break;
@@ -198,10 +198,6 @@ function tetrisGame(id) {
 				}
 			};
 
-		//	$(document).unbind('keyup').bind('keyup',function(event){
-		//		if(event.keyCode == 40)
-		//			self.data.actualSpeed = self.data.defaultSpeed;
-		//	});
 			document.onkeyup = function(event){
 				if(event.keyCode == 40)
 					self.data.actualSpeed = self.data.defaultSpeed;
@@ -243,7 +239,7 @@ function tetrisGame(id) {
 					self.dom.boardElement.className = 'tetrisElement';
 			}
 			if(gameOver) {
-				alert('KONIEC, przegrałeś!');
+				alert('Game over!');
 				self.data.pause = true;
 				clearTimeout(self.data.timer);
 				self.init();
@@ -409,7 +405,7 @@ function tetrisGame(id) {
 					if(self.data.points == self.data.goal) {
 						self.data.pause = true;
 						clearTimeout(self.data.timer);
-						alert('Wygrałeś, gratulacje!');
+						alert('Congratulations!');
 					}
 					for (var w = 1; w <= self.data.boardWidth; w++) {
 						self.data.board[height][w] = 0;
