@@ -1,393 +1,143 @@
-function tetrisGame(id) {
-		var self = this;
+var data = data || {};
+var dom = dom || {};
 
-		self.removeClasses = function(className) {
-			var board = document.getElementById('tetrisBoard');
-			var p = board.getElementsByTagName('p');
-			for (i = 0; i < p.length; i++) {
-				if(p[i].className == className)
-					p[i].className = '';
-			}
-		};
-		
-		self.dom = {
-			core: null,
-			board: null,
-			boardNext: null,
-			controls: null,
-			play: null
-		};
-		self.data = {
-			boardWidth: 10,
-			boardHeight: 20,
-			boardNextWidth: 4,
-			boardNextHeight: 2,
-			counter: 0,
-			points: 0,
-			goal: 500,
-			pause: false,
-			defaultSpeed: 500,
-			fastSpeed: 20,
-			actualSpeed: 0,
-			element: [],
-			elementCount: 4,
-			board: [],
-			boardNext: [],
-			obj: {
-				id: 0,
-				item: 0,
-				shift: { x: 0, y: 0 },
-				len: [3,3,3,3,3,4,2],
-				block: [
-					[ [ [1,3],[2,1],[2,2],[2,3] ], [ [1,1],[1,2],[2,2],[3,2] ], [ [2,1],[2,2],[2,3],[3,1] ], [ [1,2],[2,2],[3,2],[3,3] ] ],
-					[ [ [1,1],[2,1],[2,2],[2,3] ], [ [1,2],[2,2],[3,1],[3,2] ], [ [2,1],[2,2],[2,3],[3,3] ], [ [1,2],[1,3],[2,2],[3,2] ] ],
-					[ [ [1,2],[2,1],[2,2],[2,3] ], [ [1,2],[2,1],[2,2],[3,2] ], [ [2,1],[2,2],[2,3],[3,2] ], [ [1,2],[2,2],[2,3],[3,2] ] ],
-					[ [ [1,2],[1,3],[2,1],[2,2] ], [ [1,2],[2,2],[2,3],[3,3] ] ],
-					[ [ [1,1],[1,2],[2,2],[2,3] ], [ [1,3],[2,2],[2,3],[3,2] ] ],
-					[ [ [2,1],[2,2],[2,3],[2,4] ], [ [1,2],[2,2],[3,2],[4,2] ] ],
-					[ [ [1,1],[1,2],[2,1],[2,2] ] ]]
-			},
-			storage: []
-		};
+function TetrisGame() {
+    this.listeners = [];
+    this.initWell(10,20);
+    this.newTetromino();
 
-		self.init = function(){
-			self.dom.core = document.getElementById(id);
-			var coreHTML = '';
-			console.log('init: '+id);
+    var self = this;
+    data.timer = setInterval(function(){self.drop()},500);
+	data.pause = true;
+	clearInterval(data.timer);
+}
 
-			self.dom.info = '<div class="tetrisInfo">' +
-				'<div class="tetrisPlay" id="tetrisPlay">Game status: <span>pause</span></div>' +
-				'<div class="tetrisPoints">Points: <span id="tetrisPointsSpan">0</span></div>' +
-				'</div>';
-			self.dom.boardNext = '<div class="tetrisNext">Next element:' +
-				'<div class="tetrisBoardNext" id="tetrisBoardNext" style="width: '+16*self.data.boardNextWidth+'px;">' +
-				'</div>';
-			self.dom.controls = '<div class="tetrisControls">' +
-				'<p>Controls:</p></p>&nbsp;</p>' +
-				'<p>Enter - start &frasl; pause</p>' +
-				'<p>&uarr; &nbsp;&nbsp; - rotation</p>' +
-				'<p>&larr; &nbsp; - move left</p>' +
-				'<p>&rarr; &nbsp; - move right</p>' +
-				'<p>&darr; &nbsp;&nbsp; - speed up</p>' +
-				'</div>';
-/*
-			self.dom.play.toggle = function(trigger) {
-				if(trigger == 'on') {
-					self.dom.play = '<div class="tetrisPlay">Game status: <span>active</span></div>';
-					self.data.pause = false;
-					self.data.timer = setTimeout(function(){ self.renderChange() }, self.data.actualSpeed);
-				}
-				else { // trigger == off
-					self.dom.play = '<div class="tetrisPlay">Game status: <span>pause</span></div>';
-					self.data.pause = true;
-					clearTimeout(self.data.timer);
-				}
-			};
-*/
-			self.dom.board = '<div class="tetrisBoard" id="tetrisBoard" style="width: '+16*self.data.boardWidth+'px;">';
-			for(var i=1; i<=self.data.boardHeight; i++) {
-				self.data.board[i] = [];
-				for(var j=1; j<=self.data.boardWidth; j++) {
-					self.data.board[i][j] = 0;
-					self.dom.board += '<p id="board_'+i+'_'+j+'"></p>';
-				}
-			};
-			self.dom.board += '<div class="clear"></div>' + '</div>';
+TetrisGame.prototype = {
+    listeners: null,
+    well: null,
+    tetromino: null,
 
-			self.data.actualSpeed = self.data.defaultSpeed;
+    newTetromino: function() {
+        var t = Tetromino.getTetromino(Math.floor(Math.random()*6),0, Math.floor(Math.random()*(this.well.width-4)),0);
+        if (this.canPlaceInWell(t, t.x, t.y)) {
+            this.tetromino = t;
+        } else {
+            this.tetromino = null;
+        }
+    },
 
-			coreHTML += '<div class="tetrisBackground" id="tetrisBackground" style="background: url(./img/booklet_12.jpg) no-repeat"></div>' +
-				self.dom.info +
-				self.dom.board +
-				self.dom.boardNext + '</div>' +
-				self.dom.controls +
-				'<div class="clear"></div>';
-			
-			self.dom.core.innerHTML = coreHTML;
+    rotate: function() {
+        var old_t = this.tetromino;
+        var new_t = this.tetromino.rotated();
+        if (this.tryPlacingRotated(new_t, old_t, 0) ||
+            this.tryPlacingRotated(new_t, old_t, 1) ||
+            this.tryPlacingRotated(new_t, old_t, -1) ||
+            this.tryPlacingRotated(new_t, old_t, -2)) {
 
-			self.createNewElement();
-			self.createNewElement();
-			self.showNewElement();
-			self.showNextElement();
-			self.data.pause = true;
-			clearTimeout(self.data.timer);
-			
-			document.onkeypress = function(event){
-				switch(event.keyCode) {
-					case 37: { // left arrow = move left
-						event.preventDefault();
-						if(!self.data.pause)
-							self.moveElement('left');
-						break;
-					}
-					case 39: { // right arrow = move right
-						event.preventDefault();
-						if(!self.data.pause)
-							self.moveElement('right');
-						break;
-					}
-					case 40: { // down arrow = accelerate
-						event.preventDefault();
-						if(!self.data.pause) {
-							self.data.actualSpeed = self.data.fastSpeed;
-						}
-						break;
-					}
-					case 13: { // enter = pause
-						event.preventDefault();
-						if(self.data.pause) { // unpause game
-							self.data.pause = false;
-							self.dom.play = document.getElementById('tetrisPlay');
-							self.dom.play.innerHTML = 'Game status: <span>active</span>';
-							self.data.timer = setTimeout(function(){ self.renderChange() }, self.data.actualSpeed);
-						}
-						else { // pause game
-							self.data.pause = true;
-							self.dom.play = document.getElementById('tetrisPlay');
-							self.dom.play.innerHTML = 'Game status: <span>pause</span>';
-							clearTimeout(self.data.timer);
-						}
-						break;
-					}
-					case 38: { // up arrow = rotate
-						event.preventDefault();
-						if(!self.data.pause)
-							self.rotateElement();
-						break;
-					}
-					default: {}
-				}
-			};
+            this.notifyWellChanged();
+        }
+    },
 
-			document.onkeyup = function(event){
-				if(event.keyCode == 40)
-					self.data.actualSpeed = self.data.defaultSpeed;
-			}
-		};
+    tryPlacingRotated: function(new_t, old_t, x) {
+        if (this.canPlaceInWell(new_t, new_t.x+x, new_t.y) && (!x || this.canPlaceInWell(old_t, old_t.x+x, old_t.y))) {
+            new_t.x += x;
+            this.tetromino = new_t;
+            return true;
+        }
+        return false;
+    },
 
-		self.createNewElement = function() {
-			self.data.actualSpeed = self.data.defaultSpeed;
-			var newObj = {};
-			newObj.id = 0;
-			newObj.block = self.data.obj.block;
-			newObj.len = self.data.obj.len;
-			newObj.shift = self.data.obj.shift;
-			var newItem = Math.floor(Math.random() * 7);			
-			var new_block = self.data.obj.block[newItem][0];
-			newObj.item = newItem;
-			newObj.shift.x = 0;
-			newObj.shift.y = Math.floor ( ( Math.floor ( self.data.boardWidth - newObj.len[newObj.item] ) / 2 ) );
-			newObj.element = [];
-			for (var i = 0; i < self.data.elementCount; i++) {
-				newObj.element[i] = {};
-				newObj.element[i].x = new_block[i][0] + newObj.shift.x;
-				newObj.element[i].y = new_block[i][1] + newObj.shift.y;
-			}
-			self.data.storage.push(newObj);
-		};
-		
-		self.showNewElement = function() {
-			var gameOver = false;
-			self.data.obj = self.data.storage.shift();
-			self.data.element = self.data.obj.element;
-			for (var i = 0; i < self.data.elementCount; i++) {
-				var new_x = self.data.element[i].x;
-				var new_y = self.data.element[i].y;
-				if(self.data.board[new_x][new_y] == 2) {
-					gameOver = true; }
-				self.data.board[new_x][new_y] = 1;
-				self.dom.boardElement = document.getElementById('board_'+new_x+'_'+new_y);
-					self.dom.boardElement.className = 'tetrisElement';
-			}
-			if(gameOver) {
-				alert('Game over!');
-				self.data.pause = true;
-				clearTimeout(self.data.timer);
-				self.init();
-			}
-			else {
-				self.data.timer = setTimeout(function(){ self.renderChange() }, self.data.actualSpeed);
-			}
-		};
-		
-		self.showNextElement = function() {
-			var boardNext = '';
-			for(var i=1; i<=self.data.boardNextHeight; i++) {
-				self.data.boardNext[i] = [];
-				for(var j=1; j<=self.data.boardNextWidth; j++) {
-					self.data.boardNext[i][j] = 0;
-					boardNext += '<p id="boardNext_'+i+'_'+j+'"></p>';
-				}
-			}
-			boardNext += '<div class="clear"></div>';
-			self.dom.boardNext = document.getElementById('tetrisBoardNext');
-			self.dom.boardNext.innerHTML = boardNext;
+    move: function(direction) {
+        if (this.canPlaceInWell(this.tetromino, this.tetromino.x+direction, this.tetromino.y)) {
+            this.tetromino.x+=direction;
+            this.notifyWellChanged();
+        }
+    },
 
-			var nextObj = self.data.storage[0];
-			var nextElement = nextObj.element;
-			for(var i = 0; i < self.data.elementCount; i++) {
-				var next_x = nextElement[i].x - nextObj.shift.x;
-				var next_y = nextElement[i].y - nextObj.shift.y;
-				self.dom.boardNextElement = document.getElementById('boardNext_'+next_x+'_'+next_y);
-					self.dom.boardNextElement.className = 'tetrisElement';
-			}
-		};
-		
-		self.renderChange = function() {
-			self.removeClasses('tetrisElement');
-			var wallHit = false;
-			for (var i = 0; i < self.data.elementCount; i++) {
-				var x = self.data.element[i].x;
-				var y = self.data.element[i].y;
-				var new_x = x+1;
-				if (new_x > self.data.boardHeight || self.data.board[new_x][y] == 2) {
-					wallHit = true; break;
-				}
-			}
-			if(wallHit) {
-				for (var i = 0; i < self.data.elementCount; i++) {
-					var x = self.data.element[i].x;
-					var y = self.data.element[i].y;
-					self.data.board[x][y] = 2;
-					self.dom.boardElement = document.getElementById('board_' + (x) + '_' + y);
-						self.dom.boardElement.className = 'tetrisWall';
-				}
-			} else {
-				for (var i = 0; i < self.data.elementCount; i++) {
-					var x = self.data.element[i].x;
-					var y = self.data.element[i].y;
-					var new_x = ++self.data.element[i].x;
-					self.data.board[x][y] = 0;
-					self.data.board[new_x][y] = 1;
-					self.dom.boardElement = document.getElementById('board_'+new_x+'_'+y);
-						self.dom.boardElement.className = 'tetrisElement';
-				}
-			}
-			if(wallHit) {
-				self.checkLevel();
-				self.createNewElement();
-				self.showNewElement();
-				self.showNextElement();
-			} else {
-				self.data.obj.shift.x++;
-				self.data.timer = setTimeout(function(){ self.renderChange() }, self.data.actualSpeed);
-			}
-		};
-		
-		self.moveElement = function(direction) {
-			var wallHit = false;
-			switch(direction) {
-				case 'left': { var dir = -1; self.data.obj.shift.y--; break; }
-				case 'right': { var dir = 1; self.data.obj.shift.y++; break; }
-				default: {}
-			}
-			for (var i = 0; i < self.data.elementCount; i++) {
-				var x = self.data.element[i].x;
-				var y = self.data.element[i].y;
-				var new_y = y+dir;
-				if (new_y < 1 || new_y > self.data.boardWidth || self.data.board[x][new_y] == 2) {
-					wallHit = true; break;
-				}
-			}
-			if(!wallHit) {
-				self.removeClasses('tetrisElement');
-				for (var i = 0; i < self.data.elementCount; i++) {
-					var x = self.data.element[i].x;
-					var y = self.data.element[i].y;
-					self.data.element[i].y += dir;
-					var new_y = self.data.element[i].y;
-					self.data.board[x][y] = 0;
-					self.data.board[x][new_y] = 1;
-					self.dom.boardElement = document.getElementById('board_'+x+'_'+new_y);
-						self.dom.boardElement.className = 'tetrisElement';
-				}
-			}
-			else {
-				self.data.obj.id = (--self.data.obj.id)%self.data.obj.block[self.data.obj.item].length;
-				switch(direction) {
-					case 'left': { var dir = -1; self.data.obj.shift.y++; break; }
-					case 'right': { var dir = 1; self.data.obj.shift.y--; break; }
-					default: {}
-				}
-			}
-		};
-		
-		self.rotateElement = function() {
-			array = self.data.element;
-			self.removeClasses('tetrisElement');
-			self.data.obj.id = (++self.data.obj.id)%self.data.obj.block[self.data.obj.item].length;
-			var rotated_block = self.data.obj.block[self.data.obj.item][self.data.obj.id];
-			var new_array = [];
-			for (var i = 0; i < self.data.elementCount; i++) {
-				new_array[i] = {};
-				new_array[i].x = rotated_block[i][0] + self.data.obj.shift.x;
-				new_array[i].y = rotated_block[i][1] + self.data.obj.shift.y;
-			}
-			var wall = false;
-			for(var i = 0; i < self.data.elementCount; i++) {
-				if(new_array[i].y < 1 || new_array[i].x < 0 || new_array[i].y > self.data.boardWidth || self.data.board[new_array[i].y][new_array[i].x] == 2) {
-					wall = true; break;
-				}
-			}
-			if(!wall) {
-				for(var i = 0; i < self.data.elementCount; i++) {
-					array[i].x = new_array[i].x;
-					array[i].y = new_array[i].y;
-					self.dom.boardElement = document.getElementById('board_'+array[i].x+'_'+array[i].y);
-						self.dom.boardElement.className = 'tetrisElement';
-					self.data.element = array;
-				}
-			}
-			else {
-				for(var i = 0; i < self.data.elementCount; i++) {
-					self.dom.boardElement = document.getElementById('board_'+array[i].x+'_'+array[i].y);
-						self.dom.boardElement.className = 'tetrisElement';
-				}
-			}
-		};
-		
-		self.checkLevel = function() {
-			for(var height = self.data.boardHeight; height>0; height--) {
-				var levelCount = 0;
-				for(var cc=1; cc<=self.data.boardWidth; cc++) {
-					if(self.data.board[height][cc] == 2) {
-						levelCount++;
-					}
-				}
-				if(levelCount == self.data.boardWidth) {
-					self.data.points+=10;
-					var bg = document.getElementById('tetrisBackground');
-						bg.style.background = 'url(./img/booklet_'+(Math.ceil(self.data.points/50))+'.jpg) no-repeat';
-					var points = document.getElementById('tetrisPointsSpan');
-						points.innerHTML = self.data.points;
-					if(self.data.points == self.data.goal) {
-						self.data.pause = true;
-						clearTimeout(self.data.timer);
-						alert('Congratulations!');
-					}
-					for (var w = 1; w <= self.data.boardWidth; w++) {
-						self.data.board[height][w] = 0;
-						var wall = document.getElementById('board_'+height+'_'+w);
-						if(wall.className == 'tetrisWall')
-							wall.className = '';
-					}
-					for(var h = height; h >= 1; h--) {
-						for(var w = self.data.boardWidth; w >= 1; w--) {
-							var wall = document.getElementById('board_'+h+'_'+w);
-							var new_h = h+1;
-							if(wall.className == 'tetrisWall') {
-								wall.className = '';
-								self.data.board[h][w] = 0;
-								self.data.board[new_h][w] = 2;
-								var wall = document.getElementById('board_'+new_h+'_'+w);
-									wall.className = 'tetrisWall';
-							}
-						}
-					}
-					self.checkLevel();
-				}
-			}
-		};
-	};
-var game = new tetrisGame('tetrisContainer');
-	game.init();
+    drop: function() {
+        if (this.canPlaceInWell(this.tetromino, this.tetromino.x, this.tetromino.y + 1)) {
+            this.tetromino.y+=1;
+            this.notifyWellChanged();
+        } else {
+            this.placeInWell(this.tetromino);
+            this.newTetromino()
+        }
+    },
+
+    addListener: function(callback) {
+        this.listeners.push(callback);
+    },
+
+    canPlaceInWell: function(tetromino,x,y) {
+        var blocks = tetromino.blocks;
+
+        for(var i=0; i < blocks.length; i++) {
+            for(var j=0; j < blocks[i].length; j++) {
+                if (!blocks[i][j]) continue;
+
+                // out of bounds
+                if (y+i < 0 || x+j < 0) return false;
+                if (y+i >= this.well.blocks.length) return false;
+                if (x+j >= this.well.blocks[y+i].length) return false;
+
+                // collision
+                if (this.well.blocks[y+i][x+j]) return false;
+            }
+        }
+        return true;
+    },
+
+    placeInWell: function(tetromino) {
+        var blocks = tetromino.blocks;
+        var x = tetromino.x, y = tetromino.y;
+
+        for(var i=0; i < blocks.length; i++) {
+            for(var j=0; j < blocks[i].length; j++) {
+                if (blocks[i][j]) this.well.blocks[y+i][x+j] = blocks[i][j];
+            }
+        }
+
+        this.clearWell();
+    },
+
+    clearWell: function() {
+        var blocks = this.well.blocks;
+        var write_y = blocks.length-1;
+        for(var read_y=write_y; read_y >= 0; read_y--) {
+
+            var full_line = true;
+            for(var x=0; x < blocks[read_y].length; x++) {
+                if (!blocks[read_y][x]) { full_line = false; break; }
+            }
+
+            blocks[write_y] = blocks[read_y];
+
+            if (!full_line) write_y--;
+        }
+
+        var width = blocks[0].length;
+        while(write_y >= 0) {
+            blocks[write_y] = [];
+            for(var x=0; x < width; x++) blocks[write_y][x]=0;
+            write_y--;
+        }
+    },
+
+    notifyWellChanged: function() {
+        this.listeners.forEach(function(listener){
+            listener();
+        });
+    },
+
+    initWell: function(w,h) {
+        this.well = {width:w, height:h, blocks:[]};
+
+        for(var i=0; i < h; i++) {
+            this.well.blocks[i] = []
+            for(var j=0; j < w; j++) {
+                this.well.blocks[i][j] = 0;
+            }
+        }
+    },
+
+0:0};

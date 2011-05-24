@@ -1,25 +1,21 @@
-<!doctype html>
-<html lang="pl">
+<!DOCTYPE html>
+<html lang="en-US">
 <head>
-  <meta charset="utf-8">
-  <title>Falsy Fabric Tetris</title>
-  <meta name="description" content="Falsy Fabric Tetris" />
-  <meta name="author" content="end3r" />
-  <link rel="shortcut icon" href="http://blog.end3r.com/favicon.ico" type="image/x-icon" />
-  <link rel="stylesheet" href="http://blog.end3r.com/stuff/style.css" />
-  <link href="./style.css" media="screen" type="text/css" rel="stylesheet" />
+	<meta charset="utf-8">
+	<title>Falsy Fabric Tetris</title>
+	<script src="./js/es5.js"></script>
+	<script src="./js/tetromino.js"></script>
+	<script src="./js/tetris.js"></script>
+	<script src="./js/view.js"></script>
+	<link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-  <div id="top">
-    <div id="header">
-      <a id="logo" href="http://blog.end3r.com/">end3r</a>
-      <p><a href="https://github.com/end3r/FalsyFabricTetris">GIT repo @ GitHub</a></p>
-      <h1>Falsy Fabric Tetris</h1>
-    </div>
-  </div>
-  <div id="demo">
-    <div id="tetrisContainer"></div>
-	<script type="text/javascript" src="./js/tetris.js"></script>
-  </div>  
+	<canvas width="180" height="360"></canvas>
+	<div id="tetrisContainer"></div>
+	<script>
+		var game = new TetrisGame();
+		var canvases = document.getElementsByTagName('canvas');
+		new TetrisView(canvases[0], game);
+	</script>
 </body>
 </html>

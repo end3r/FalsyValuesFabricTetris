@@ -5,9 +5,12 @@ I took my own jQuery Tetris and converted it into Javascript. The next steps wil
 For now it's a huge mess in the code, so, if you're reading this -  DON'T EVEN TRY to figure it out ;)
 
 This is the plan:
-1. jQuery Tetris (done)
-2. Javascript Tetris (actual)
+1. jQuery Tetris
+2. Javascript Tetris
 3. Javascript Tetris with the proper, clean/nice code
 4. Javascript Tetris using Canvas
 5. Javascript Tetris using Fabric.js
 6. Javascript Tetris with the Falsy Values style (background, faces etc)
+
+UPDATE
+Totally different approach: using code from the workshops as the base and then applying the code from my jquery tetris rewritten in javascript, step by step.
