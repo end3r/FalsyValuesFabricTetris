@@ -1,3 +1,4 @@
+// todo: refactor this
 var data = data || {};
 var dom = dom || {};
 
@@ -8,6 +9,8 @@ function TetrisGame() {
 
     var self = this;
     data.timer = setInterval(function(){self.drop()},500);
+	data.points = 0;
+	data.goal = 50;
 	data.pause = true;
 	clearInterval(data.timer);
 }
@@ -18,11 +21,13 @@ TetrisGame.prototype = {
     tetromino: null,
 
     newTetromino: function() {
+		data.gameOver = false;
         var t = Tetromino.getTetromino(Math.floor(Math.random()*6),0, Math.floor(Math.random()*(this.well.width-4)),0);
         if (this.canPlaceInWell(t, t.x, t.y)) {
             this.tetromino = t;
         } else {
             this.tetromino = null;
+			data.gameOver = true;
         }
     },
 
@@ -55,13 +60,22 @@ TetrisGame.prototype = {
     },
 
     drop: function() {
-        if (this.canPlaceInWell(this.tetromino, this.tetromino.x, this.tetromino.y + 1)) {
-            this.tetromino.y+=1;
-            this.notifyWellChanged();
-        } else {
-            this.placeInWell(this.tetromino);
-            this.newTetromino()
-        }
+		if(!data.gameOver) {
+			if (this.canPlaceInWell(this.tetromino, this.tetromino.x, this.tetromino.y + 1)) {
+				this.tetromino.y+=1;
+				this.notifyWellChanged();
+			} else {
+				this.placeInWell(this.tetromino);
+				this.newTetromino()
+			}
+		}
+		else { // game over
+			data.pause = true;
+			this.tetromino = null;
+			clearInterval(data.timer);
+			alert('GAME OVER!');
+			// todo: START NEW GAME
+		}
     },
 
     addListener: function(callback) {
@@ -109,10 +123,23 @@ TetrisGame.prototype = {
             for(var x=0; x < blocks[read_y].length; x++) {
                 if (!blocks[read_y][x]) { full_line = false; break; }
             }
-
             blocks[write_y] = blocks[read_y];
 
-            if (!full_line) write_y--;
+            if (!full_line) {
+				write_y--;
+			}
+			else { // add points
+				data.points += 10;
+				// todo: refactor this
+				document.getElementById('tetrisBackground').style.background = 'url(./img/booklet_'+(Math.ceil(data.points/50))+'.jpg) no-repeat';
+				document.getElementById('tetrisPointsSpan').innerHTML = data.points;
+				if(data.points == data.goal) { // check if player wins
+					data.pause = true;
+					clearInterval(data.timer);
+					alert('YOU WIN!');
+					// todo: START NEW GAME
+				}
+			}
         }
 
         var width = blocks[0].length;
