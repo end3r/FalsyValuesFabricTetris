@@ -1,33 +1,43 @@
-// todo: refactor this
-var data = data || {};
-var dom = dom || {};
-
 function TetrisGame() {
     this.listeners = [];
     this.initWell(10,20);
+    //this.initWell(4,4);
+    this.newTetromino();
     this.newTetromino();
 
+	this.data = {};
+	this.data.storage = [];
+
     var self = this;
-    data.timer = setInterval(function(){self.drop()},500);
-	data.points = 0;
-	data.goal = 50;
-	data.pause = true;
-	clearInterval(data.timer);
+    this.data.speed = 500;
+
+    this.data.timer = setInterval(function(){self.drop()},this.data.speed);
+	this.data.points = 0;
+	this.data.goal = 50;
+	this.data.pause = true;
+	clearInterval(this.data.timer);
 }
 
 TetrisGame.prototype = {
     listeners: null,
     well: null,
     tetromino: null,
+    data: {
+    	timer: null,
+    	points: 0,
+    	
+    	storage:[]},
 
     newTetromino: function() {
-		data.gameOver = false;
+		this.data.gameOver = false;
         var t = Tetromino.getTetromino(Math.floor(Math.random()*6),0, Math.floor(Math.random()*(this.well.width-4)),0);
         if (this.canPlaceInWell(t, t.x, t.y)) {
             this.tetromino = t;
+			this.data.storage.push(t);
+			console.log('newTetromino: '+JSON.stringify(this.data.storage));
         } else {
             this.tetromino = null;
-			data.gameOver = true;
+			this.data.gameOver = true;
         }
     },
 
@@ -60,7 +70,7 @@ TetrisGame.prototype = {
     },
 
     drop: function() {
-		if(!data.gameOver) {
+		if(!this.data.gameOver) {
 			if (this.canPlaceInWell(this.tetromino, this.tetromino.x, this.tetromino.y + 1)) {
 				this.tetromino.y+=1;
 				this.notifyWellChanged();
@@ -70,9 +80,9 @@ TetrisGame.prototype = {
 			}
 		}
 		else { // game over
-			data.pause = true;
+			this.data.pause = true;
 			this.tetromino = null;
-			clearInterval(data.timer);
+			clearInterval(this.data.timer);
 			alert('GAME OVER!');
 			// todo: START NEW GAME
 		}
@@ -102,6 +112,8 @@ TetrisGame.prototype = {
     },
 
     placeInWell: function(tetromino) {
+		var tetromino = this.data.storage.shift();
+		console.log('placeInWell: '+JSON.stringify(this.data.storage));
         var blocks = tetromino.blocks;
         var x = tetromino.x, y = tetromino.y;
 
@@ -129,13 +141,13 @@ TetrisGame.prototype = {
 				write_y--;
 			}
 			else { // add points
-				data.points += 10;
+				this.data.points += 10;
 				// todo: refactor this
-				document.getElementById('tetrisBackground').style.background = 'url(./img/booklet_'+(Math.ceil(data.points/50))+'.jpg) no-repeat';
-				document.getElementById('tetrisPointsSpan').innerHTML = data.points;
-				if(data.points == data.goal) { // check if player wins
-					data.pause = true;
-					clearInterval(data.timer);
+				document.getElementById('tetrisBackground').style.background = 'url(./img/booklet_'+(Math.ceil(this.data.points/50))+'.jpg) no-repeat';
+				document.getElementById('tetrisPointsSpan').innerHTML = this.data.points;
+				if(this.data.points == this.data.goal) { // check if player wins
+					this.data.pause = true;
+					clearInterval(this.data.timer);
 					alert('YOU WIN!');
 					// todo: START NEW GAME
 				}

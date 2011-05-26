@@ -10,12 +10,12 @@
 	<link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-	<canvas width="180" height="360"></canvas>
+	<canvas id="tetrisCanvas" width="180" height="360"></canvas>
 	<div id="tetrisContainer"></div>
 	<script>
 		var game = new TetrisGame();
-		var canvases = document.getElementsByTagName('canvas');
-		new TetrisView(canvases[0], game);
+		var tetrisCanvas = document.getElementById('tetrisCanvas');
+		new TetrisView(tetrisCanvas, game);
 	</script>
 </body>
 </html>

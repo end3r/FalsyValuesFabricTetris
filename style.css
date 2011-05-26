@@ -2,7 +2,8 @@
 
 body { width: 624px; margin: 0 auto; }
 
-canvas { outline: none; width: 180px; height: 360px; border: 1px solid #333; }
+canvas#tetrisCanvas { outline: none; width: 180px; height: 360px; border: 1px solid #333; }
+canvas#nextTetrominoCanvas { position: absolute; top: 20px; left: 20px; width: 80px; height: 80px; outline: none; border: 1px solid #333; }
 
 .clear { clear: both; height: 0px; line-height: 0px; font-size: 0px; }
 #tetrisContainer { font-size: 12px; color: #ccc; position: relative; float: right; width: 440px; height: 360px; border: 1px solid #333; }
