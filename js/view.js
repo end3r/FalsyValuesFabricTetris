@@ -1,12 +1,15 @@
 function TetrisView(canvas, game) {
-	//canvas = nextCanvas;
 	this.generateHTML();
 
-	//var canvas = document.getElementById('nextTetrominoCanvas');
+	var nextCanvas = document.getElementById('nextTetrominoCanvas');
     this.blockSize = Math.min(canvas.width/game.well.width, canvas.height/game.well.height);
+	//nextCanvas.style.width = this.blocksize*4;
+	//nextCanvas.style.height = this.blocksize*4;
     this.game = game;
     this.ctx = canvas.getContext('2d');
+    this.nextCtx = nextCanvas.getContext('2d');
 	this.data = game.data;
+	//this.game.data = {}; /* ... */
 
     var self = this;
     canvas.addEventListener('keydown', function(e) {self.keyHandler(e);}, false);
@@ -26,41 +29,33 @@ TetrisView.prototype = {
     game: null,
     focused: false,
 
-    key: {
-        UP: 38,
-        DOWN: 40,
-        LEFT: 37,
-        RIGHT: 39,
-        ENTER: 13
-    },
-
     keyHandler: function(e) {
         switch(e.keyCode) {
-            case this.key.UP: {
+            case this.game.config.KEYS.UP: {
             	if(!this.data.pause)
                 	this.game.rotate();
                 break;
             }
-            case this.key.LEFT: {
+            case this.game.config.KEYS.LEFT: {
             	if(!this.data.pause)
                 this.game.move(-1);
                 break;
             }
-            case this.key.RIGHT: {
+            case this.game.config.KEYS.RIGHT: {
             	if(!this.data.pause)
                 this.game.move(1);
                 break;
             }
-            case this.key.DOWN: {
+            case this.game.config.KEYS.DOWN: {
             	if(!this.data.pause)
                 this.game.drop();
                 break;
             }
-            case this.key.ENTER: {
+            case this.game.config.KEYS.ENTER: {
 				if(this.data.pause) { // unpause game
 					this.data.pause = false;
 					document.getElementById('tetrisPlay').innerHTML = 'Game status: <span>active</span>';
-					this.data.timer = setInterval(function(){ this.game.drop(); }, this.data.speed);
+					this.data.timer = setInterval(function(){ this.game.drop(); }, this.game.config.GAME_SPEED);
 				}
 				else { // pause game
 					this.data.pause = true;
@@ -74,28 +69,29 @@ TetrisView.prototype = {
         e.preventDefault();
     },
 
-    wellColors: ['#111111', '#0000ff', '#ffa500', '#ffff00', '#00ff00', '#aa00ff', '#ff0000' ],
-
     draw: function() {
-        this.drawBlocks(this.game.well.blocks,0,0, false);
-        this.drawBlocks(this.game.tetromino.blocks, this.game.tetromino.x, this.game.tetromino.y, true);
+        this.drawBlocks(this.ctx, this.game.well.blocks,0,0, false);
+        this.drawBlocks(this.nextCtx, this.game.nextWell.blocks,0,0, false);
+        this.drawBlocks(this.ctx, this.game.tetromino.blocks, this.game.tetromino.x, this.game.tetromino.y, true);
+        this.drawBlocks(this.nextCtx, this.data.nextTetromino.blocks,0,0, true);
     },
 
-    drawBlocks: function(blocks, x,y, skipzero) {
+    drawBlocks: function(context, blocks, x,y, skipzero) {
         var blockSize = this.blockSize;
 
         for(var i=0; i < blocks.length; i++) {
             for(var j=0; j < blocks[i].length; j++) {
                 if (skipzero && !blocks[i][j]) continue;
 
-                this.ctx.fillStyle = this.wellColors[blocks[i][j]];
-                this.ctx.fillRect(blockSize*(x+j), blockSize*(y+i), blockSize-1, blockSize-1);
+                context.fillStyle = this.game.config.WELL.COLORS[blocks[i][j]];
+                context.fillRect(blockSize*(x+j), blockSize*(y+i), blockSize-1, blockSize-1);
             }
         }
     },
     
     generateHTML: function() {
 		var coreHTML = '' +
+			'<p>Next block:</p>' +
 			'<canvas id="nextTetrominoCanvas" width="80" height="80"></canvas>' +
 			'<div class="tetrisBackground" id="tetrisBackground" style="background: url(./img/booklet_12.jpg) no-repeat"></div>' +
 			'<div class="tetrisInfo">' +
