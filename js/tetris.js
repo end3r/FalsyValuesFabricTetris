@@ -140,8 +140,15 @@ TetrisGame.prototype = {
 			else { // add points
 				this.data.points += this.config.POINTS_UNIT;
 				// todo: refactor this
-				document.getElementById('tetrisBackground').style.background = 'url(./img/booklet_'+(Math.ceil(this.data.points/50))+'.jpg) no-repeat';
+				var numID = (Math.ceil(this.data.points/this.config.POINTS_CHANGE)-1),
+					face = document.getElementById('tetrisFace');
+				face.style.background = '#aaa url(./img/face_'+numID+'.png) 10px 10px no-repeat';
+				face.innerHTML = '<h2>'+this.config.FACES.NAMES[numID]+
+					'<span>"'+this.config.FACES.TITLES[numID]+'"</span>'+
+					'<a href="http://'+this.config.FACES.LINKS[numID]+'/">'+this.config.FACES.LINKS[numID]+'</a>'+
+				'</h2>';
 				document.getElementById('tetrisPointsSpan').innerHTML = this.data.points;
+				
 				if(this.data.points == this.config.GOAL_POINTS) { // check if player wins
 					this.data.pause = true;
 					clearInterval(this.data.timer);

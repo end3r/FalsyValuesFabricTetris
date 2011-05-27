@@ -1,14 +1,15 @@
 function TetrisView(canvas, game) {
+    this.game = game;
+	this.data = game.data;
+
 	this.generateHTML();
 
 	var nextCanvas = document.getElementById('nextTetrominoCanvas');
     this.blockSize = Math.min(canvas.width/game.well.width, canvas.height/game.well.height);
 	//nextCanvas.style.width = this.blocksize*4;
 	//nextCanvas.style.height = this.blocksize*4;
-    this.game = game;
     this.ctx = canvas.getContext('2d');
     this.nextCtx = nextCanvas.getContext('2d');
-	this.data = game.data;
 	//this.game.data = {}; /* ... */
 
     var self = this;
@@ -92,8 +93,14 @@ TetrisView.prototype = {
     generateHTML: function() {
 		var coreHTML = '' +
 			'<p>Next block:</p>' +
-			'<canvas id="nextTetrominoCanvas" width="80" height="80"></canvas>' +
-			'<div class="tetrisBackground" id="tetrisBackground" style="background: url(./img/booklet_12.jpg) no-repeat"></div>' +
+			'<canvas id="nextTetrominoCanvas" width="72" height="54"></canvas>' +
+			'<h1>FALSY <span>===</span> VALUES</h1>' +
+			'<div class="tetrisFace" id="tetrisFace" style="background: #aaa url(./img/face_0.png) 10px 10px no-repeat">'+
+				'<h2>'+this.game.config.FACES.NAMES[0]+
+					'<span>"'+this.game.config.FACES.TITLES[0]+'"</span>'+
+					'<a href="http://'+this.game.config.FACES.LINKS[0]+'/">'+this.game.config.FACES.LINKS[0]+'</a>'+
+				'</h2>'+
+			'</div>' +
 			'<div class="tetrisInfo">' +
 				'<div class="tetrisPlay" id="tetrisPlay">Press [ENTER] to start</div>' +
 				'<div class="tetrisPoints">Points: <span id="tetrisPointsSpan">0</span></div>' +
