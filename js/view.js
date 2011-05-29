@@ -6,11 +6,8 @@ function TetrisView(canvas, game) {
 
 	var nextCanvas = document.getElementById('nextTetrominoCanvas');
     this.blockSize = Math.min(canvas.width/game.well.width, canvas.height/game.well.height);
-	//nextCanvas.style.width = this.blocksize*4;
-	//nextCanvas.style.height = this.blocksize*4;
     this.ctx = canvas.getContext('2d');
     this.nextCtx = nextCanvas.getContext('2d');
-	//this.game.data = {}; /* ... */
 
     var self = this;
     canvas.addEventListener('keydown', function(e) {self.keyHandler(e);}, false);
@@ -92,28 +89,41 @@ TetrisView.prototype = {
     
     generateHTML: function() {
 		var coreHTML = '' +
-			'<p>Next block:</p>' +
-			'<canvas id="nextTetrominoCanvas" width="72" height="54"></canvas>' +
-			'<h1>FALSY <span>===</span> VALUES</h1>' +
-			'<div class="tetrisFace" id="tetrisFace" style="background: #aaa url(./img/face_0.png) 10px 10px no-repeat">'+
-				'<h2>'+this.game.config.FACES.NAMES[0]+
-					'<span>"'+this.game.config.FACES.TITLES[0]+'"</span>'+
-					'<a href="http://'+this.game.config.FACES.LINKS[0]+'/">'+this.game.config.FACES.LINKS[0]+'</a>'+
-				'</h2>'+
+			'<div id="tetrisNext"><h3>Next block:</h3>' +
+				'<canvas id="nextTetrominoCanvas" width="72" height="54"></canvas>' +
 			'</div>' +
-			'<div class="tetrisInfo">' +
-				'<div class="tetrisPlay" id="tetrisPlay">Press [ENTER] to start</div>' +
-				'<div class="tetrisPoints">Points: <span id="tetrisPointsSpan">0</span></div>' +
+			'<div id="tetrisInfo">' +
+				'<h3>Game info:</h3>' +
+				'<div id="tetrisPlay">Press <strong>[ENTER]</strong> to start!</div>' +
+				'<div id="tetrisPoints">Points: <span id="tetrisPointsSpan">0</span></div>' +
 			'</div>' +
-			'<div class="tetrisControls">' +
-				'<p>Controls:</p></p>&nbsp;</p>' +
-				'<p>Enter - start &frasl; pause</p>' +
-				'<p>&uarr; &nbsp;&nbsp; - rotation</p>' +
-				'<p>&larr; &nbsp; - move left</p>' +
-				'<p>&rarr; &nbsp; - move right</p>' +
-				'<p>&darr; &nbsp;&nbsp; - speed up</p>' +
+			'<div id="tetrisControls">' +
+				'<h3>Controls:</h3>' +
+				'<p>Enter <span>start &frasl; pause</span></p>' +
+				'<p>&uarr; <span>rotation</span></p>' +
+				'<p>&larr; <span>move left</span></p>' +
+				'<p>&rarr; <span>move right</span></p>' +
+				'<p>&darr; <span>speed up</span></p>' +
+			'</div>' +
+			'<h1>Falsy <span>===</span> Values</h1>' +
+			'<div id="tetrisFace">' +
+				'<img src="./img/face_0.png" alt="face" />' +
+				'<h2>'+this.game.config.FACES.NAMES[0] + '</h2>' +
+				'<p>"'+this.game.config.FACES.TITLES[0]+'"</p>' +
+				'<a href="http://'+this.game.config.FACES.LINKS[0]+'/">'+this.game.config.FACES.LINKS[0]+'</a>' +
 			'</div>';
 		document.getElementById('tetrisContainer').innerHTML = coreHTML;
     },
+/*
+    dialogBox: function(status) {
+    	var message = '';
+    	if(status == 'winner') message = '<p>You are the winner! Congratulations!</p>';
+		else message = '<p>Awww... You lose!</p>';
+		message += '<a href="./">Try again?</a>';
 
+    	var dialogHTML = '<div id="tetrisBlackbox"></div>' + '<div id="tetrisDialog">'+message+'</div>';
+    	var body = document.getElementsByTagName('body');
+    	body[0].innerHTML += dialogHTML;
+    },
+*/
 0:0};

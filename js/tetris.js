@@ -36,7 +36,7 @@ TetrisGame.prototype = {
     },
 
     newNextTetromino: function() {
-        return Tetromino.getTetromino(Math.floor(Math.random()*6),0/*rotation, do something with this*/, Math.floor(Math.random()*(this.well.width-4))/*maybe less random, more in the center of the well*/,0);
+        return Tetromino.getTetromino(Math.floor(Math.random()*6),0, Math.floor(Math.random()*(this.well.width-4)),0);
     },
 
     rotate: function() {
@@ -83,6 +83,7 @@ TetrisGame.prototype = {
 			this.tetromino = null;
 			clearInterval(this.data.timer);
 			alert('GAME OVER!');
+			//--dialogBox('looser');
 			// todo: START NEW GAME
 		}
     },
@@ -139,20 +140,20 @@ TetrisGame.prototype = {
 			}
 			else { // add points
 				this.data.points += this.config.POINTS_UNIT;
-				// todo: refactor this
 				var numID = (Math.ceil(this.data.points/this.config.POINTS_CHANGE)-1),
 					face = document.getElementById('tetrisFace');
-				face.style.background = '#aaa url(./img/face_'+numID+'.png) 10px 10px no-repeat';
-				face.innerHTML = '<h2>'+this.config.FACES.NAMES[numID]+
-					'<span>"'+this.config.FACES.TITLES[numID]+'"</span>'+
-					'<a href="http://'+this.config.FACES.LINKS[numID]+'/">'+this.config.FACES.LINKS[numID]+'</a>'+
-				'</h2>';
+				face.innerHTML = '' +
+					'<img src="./img/face_'+numID+'.png" alt="face" />' +
+					'<h2>'+this.config.FACES.NAMES[numID]+'</h2>' +
+					'<p>"'+this.config.FACES.TITLES[numID]+'"</p>' +
+					'<a href="http://'+this.config.FACES.LINKS[numID]+'/">'+this.config.FACES.LINKS[numID]+'</a>';
 				document.getElementById('tetrisPointsSpan').innerHTML = this.data.points;
 				
 				if(this.data.points == this.config.GOAL_POINTS) { // check if player wins
 					this.data.pause = true;
 					clearInterval(this.data.timer);
 					alert('YAY! WINNER!');
+					//--dialogBox('winner');
 					// todo: START NEW GAME
 				}
 			}

@@ -8,13 +8,19 @@ function TetrisConfig() {
 			WIDTH: 10,
 			HEIGHT: 20,
 			COLORS: [
-				'#111111',
-				'#0000ff',
-				'#ffa500',
-				'#ffff00',
-				'#00ff00',
-				'#aa00ff',
-				'#ff0000'
+				'#333333',
+				'#FEB1D3',
+				'#7DB72F',
+				'#F16C7C',
+				'#00ADEE',
+				'#ED1C24',
+				'#FAA51A'
+			//	'#F171AB',
+			//	'#4E7D0E',
+			//	'#BF404F',
+			//	'#0078A5',
+			//	'#AA1317',
+			//	'#F47A20'
 			]
 		},
 		KEYS: {
