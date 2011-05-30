@@ -71,7 +71,7 @@ TetrisView.prototype = {
         this.drawBlocks(this.ctx, this.game.well.blocks,0,0, false);
         this.drawBlocks(this.nextCtx, this.game.nextWell.blocks,0,0, false);
         this.drawBlocks(this.ctx, this.game.tetromino.blocks, this.game.tetromino.x, this.game.tetromino.y, true);
-        this.drawBlocks(this.nextCtx, this.data.nextTetromino.blocks,0,0, true);
+		this.drawBlocks(this.nextCtx, this.data.nextTetromino.blocks,0,0, true);
     },
 
     drawBlocks: function(context, blocks, x,y, skipzero) {
@@ -105,8 +105,8 @@ TetrisView.prototype = {
 				'<p>&rarr; <span>move right</span></p>' +
 				'<p>&darr; <span>speed up</span></p>' +
 			'</div>' +
-			'<h1>Falsy <span>===</span> Values</h1>' +
-			'<div id="tetrisFace">' +
+			'<h1><a href="http://falsyvalues.com/">Falsy <span>===</span> Values</a></h1>' +
+			'<div class="tetrisFace" id="tetrisFace">' +
 				'<img src="./img/face_0.png" alt="face" />' +
 				'<h2>'+this.game.config.FACES.NAMES[0] + '</h2>' +
 				'<p>"'+this.game.config.FACES.TITLES[0]+'"</p>' +
@@ -114,16 +114,5 @@ TetrisView.prototype = {
 			'</div>';
 		document.getElementById('tetrisContainer').innerHTML = coreHTML;
     },
-/*
-    dialogBox: function(status) {
-    	var message = '';
-    	if(status == 'winner') message = '<p>You are the winner! Congratulations!</p>';
-		else message = '<p>Awww... You lose!</p>';
-		message += '<a href="./">Try again?</a>';
 
-    	var dialogHTML = '<div id="tetrisBlackbox"></div>' + '<div id="tetrisDialog">'+message+'</div>';
-    	var body = document.getElementsByTagName('body');
-    	body[0].innerHTML += dialogHTML;
-    },
-*/
 0:0};

@@ -82,9 +82,7 @@ TetrisGame.prototype = {
 			this.data.pause = true;
 			this.tetromino = null;
 			clearInterval(this.data.timer);
-			alert('GAME OVER!');
-			//--dialogBox('looser');
-			// todo: START NEW GAME
+			this.gameOver('looser');
 		}
     },
 
@@ -152,9 +150,7 @@ TetrisGame.prototype = {
 				if(this.data.points == this.config.GOAL_POINTS) { // check if player wins
 					this.data.pause = true;
 					clearInterval(this.data.timer);
-					alert('YAY! WINNER!');
-					//--dialogBox('winner');
-					// todo: START NEW GAME
+					this.gameOver('winner');
 				}
 			}
         }
@@ -190,5 +186,21 @@ TetrisGame.prototype = {
             }
         }
     },
+		
+	// I know this should be in the View... I will move it there later
+	gameOver: function(result) {
+    	var message = '<img src="./img/logo.png" alt="FalsyValues logo" />' +
+			'<h2>Falsy Values Fabric Tetris</h2>';
+    	if(result == 'winner') {
+			message += '<p>You are the winner! Congratulations!</p>';
+		}
+		else {
+			message += '<p>Awww... You lose!</p>';
+		}
+		message += '<a href="">Try again?</a>';
+    	var resultHTML = '<div id="tetrisBlackbox"></div>' + '<div class="tetrisFace" id="tetrisDialog">'+message+'</div>';
+    	var body = document.getElementsByTagName('body');
+    	body[0].innerHTML += resultHTML;
+	},
 
 0:0};
