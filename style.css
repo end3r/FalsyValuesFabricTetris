@@ -4,6 +4,7 @@
 }
 body {
 	width: 624px;
+	height: 360px;
 	margin: 0 auto;
 	line-height: 20px;
 	position: relative;
@@ -87,8 +88,7 @@ canvas#nextTetrominoCanvas {
 	float: right;
 	text-align: right;
 }
-
-.tetrisFace {
+.tetrisBox {
 	bottom: 10px;
 	left: 10px;
 	clear: both;
@@ -96,19 +96,19 @@ canvas#nextTetrominoCanvas {
 	width: 395px;
 	text-align: right;
 }
-.tetrisFace img {
+.tetrisBox img {
 	padding: 0px;
 	float: left;
 }
-.tetrisFace h2 {
+.tetrisBox h2 {
 	font: normal 18px Georgia;
 }
-.tetrisFace p {
+.tetrisBox p {
 	font-style: italic;
 	font-size: 14px;
 	margin: 15px 0px 60px 0px;
 }
-.tetrisFace a {
+.tetrisBox a {
 	font: normal 12px Georgia;
 	color: #222;
 }
@@ -123,16 +123,16 @@ canvas#nextTetrominoCanvas {
 }
 #tetrisBlackbox {
 	position: absolute;
-	top: 0;
-	left: 0;
+	top: 0px;
+	left: 0px;
 	z-index: 2;
-	width: 100%;
-	height: 100%;
-	background: #000;
+	width: 624px;
+	height: 360px;
+	background: #000000;
 	opacity: 0.7;
 }
 #tetrisDialog {
-	z-index: 2;
+	z-index: 3;
 	position: absolute;
 	top: 100px;
 	left: 100px;

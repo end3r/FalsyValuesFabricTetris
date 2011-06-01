@@ -1,19 +1,18 @@
 function TetrisView(canvas, game) {
     this.game = game;
 	this.data = game.data;
-
+	this.game.gameOver = this.gameOver;
 	this.generateHTML();
 
-	var nextCanvas = document.getElementById('nextTetrominoCanvas');
-    this.blockSize = Math.min(canvas.width/game.well.width, canvas.height/game.well.height);
+	var nextCanvas = document.getElementById('nextTetrominoCanvas'),
+		page = document.getElementsByTagName('html')[0];
+	
+    this.data.blockSize = Math.min(canvas.width/game.well.width, canvas.height/game.well.height);
     this.ctx = canvas.getContext('2d');
     this.nextCtx = nextCanvas.getContext('2d');
 
     var self = this;
-    canvas.addEventListener('keydown', function(e) {self.keyHandler(e);}, false);
-    canvas.addEventListener('focus', function(e) {self.focused = true; self.draw();}, false);
-    canvas.addEventListener('blur', function(e) {self.focused = false; self.draw();}, false);
-
+	page.addEventListener('keydown', function(e) {self.keyHandler(e);}, false);
     this.game.addListener(function(){self.draw()});
 
     canvas.tabIndex = 0;
@@ -24,8 +23,8 @@ function TetrisView(canvas, game) {
 
 TetrisView.prototype = {
     ctx: null,
+	nextCtx: null,
     game: null,
-    focused: false,
 
     keyHandler: function(e) {
         switch(e.keyCode) {
@@ -75,7 +74,7 @@ TetrisView.prototype = {
     },
 
     drawBlocks: function(context, blocks, x,y, skipzero) {
-        var blockSize = this.blockSize;
+        var blockSize = this.data.blockSize;
 
         for(var i=0; i < blocks.length; i++) {
             for(var j=0; j < blocks[i].length; j++) {
@@ -106,13 +105,28 @@ TetrisView.prototype = {
 				'<p>&darr; <span>speed up</span></p>' +
 			'</div>' +
 			'<h1><a href="http://falsyvalues.com/">Falsy <span>===</span> Values</a></h1>' +
-			'<div class="tetrisFace" id="tetrisFace">' +
+			'<div class="tetrisBox" id="tetrisFace">' +
 				'<img src="./img/face_0.png" alt="face" />' +
 				'<h2>'+this.game.config.FACES.NAMES[0] + '</h2>' +
-				'<p>"'+this.game.config.FACES.TITLES[0]+'"</p>' +
+				'<p>'+this.game.config.FACES.TITLES[0]+'</p>' +
 				'<a href="http://'+this.game.config.FACES.LINKS[0]+'/">'+this.game.config.FACES.LINKS[0]+'</a>' +
 			'</div>';
 		document.getElementById('tetrisContainer').innerHTML = coreHTML;
     },
 
+	gameOver: function(result) {
+    	var message = '<img src="./img/logo.png" alt="Falsy Values logo" />' +
+			'<h2>Falsy Values Fabric Tetris</h2>';
+    	if(result == 'winner') {
+			message += '<p> Congratulations, You won the game!</p>';
+		}
+		else {
+			message += '<p>Sorry, You lose the game.</p>';
+		}
+		message += '<a href="">Try again?</a>';
+    	var resultHTML = '<div id="tetrisBlackbox"></div>' + '<div class="tetrisBox" id="tetrisDialog">'+message+'</div>';
+    	var body = document.getElementsByTagName('body')[0];
+    	body.innerHTML += resultHTML;
+	},
+		
 0:0};

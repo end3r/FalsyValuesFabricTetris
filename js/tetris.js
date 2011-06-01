@@ -143,7 +143,7 @@ TetrisGame.prototype = {
 				face.innerHTML = '' +
 					'<img src="./img/face_'+numID+'.png" alt="face" />' +
 					'<h2>'+this.config.FACES.NAMES[numID]+'</h2>' +
-					'<p>"'+this.config.FACES.TITLES[numID]+'"</p>' +
+					'<p>'+this.config.FACES.TITLES[numID]+'</p>' +
 					'<a href="http://'+this.config.FACES.LINKS[numID]+'/">'+this.config.FACES.LINKS[numID]+'</a>';
 				document.getElementById('tetrisPointsSpan').innerHTML = this.data.points;
 				
@@ -187,20 +187,8 @@ TetrisGame.prototype = {
         }
     },
 		
-	// I know this should be in the View... I will move it there later
-	gameOver: function(result) {
-    	var message = '<img src="./img/logo.png" alt="FalsyValues logo" />' +
-			'<h2>Falsy Values Fabric Tetris</h2>';
-    	if(result == 'winner') {
-			message += '<p>You are the winner! Congratulations!</p>';
-		}
-		else {
-			message += '<p>Awww... You lose!</p>';
-		}
-		message += '<a href="">Try again?</a>';
-    	var resultHTML = '<div id="tetrisBlackbox"></div>' + '<div class="tetrisFace" id="tetrisDialog">'+message+'</div>';
-    	var body = document.getElementsByTagName('body');
-    	body[0].innerHTML += resultHTML;
+	gameOver: function() {
+		// defined in TetrisView
 	},
 
 0:0};
