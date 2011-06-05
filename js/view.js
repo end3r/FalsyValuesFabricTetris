@@ -6,8 +6,7 @@ function TetrisView(canvas, game) {
 
 	var nextCanvas = document.getElementById('nextTetrominoCanvas'),
 		page = document.getElementsByTagName('html')[0];
-	
-    this.data.blockSize = Math.min(canvas.width/game.well.width, canvas.height/game.well.height);
+
     this.ctx = canvas.getContext('2d');
     this.nextCtx = nextCanvas.getContext('2d');
 
@@ -72,7 +71,6 @@ TetrisView.prototype = {
     draw: function() {
         this.drawBlocks(this.ctx, this.game.well.blocks,0,0, false);
         this.drawBlocks(this.nextCtx, this.game.nextWell.blocks,0,0, false);
-        //this.drawBlocks(this.ctx, this.game.tetromino.blocks, this.game.tetromino.x, this.game.tetromino.y, true);
         if(!this.fabricInit) {
         	this.fabricInit = false;
 			this.drawFabricBlocks(this.game.tetromino.blocks, this.game.tetromino.x, this.game.tetromino.y);
@@ -81,7 +79,7 @@ TetrisView.prototype = {
     },
 
     drawBlocks: function(context, blocks, x,y, skipzero) {
-        var blockSize = this.data.blockSize;
+        var blockSize = this.game.config.blockSize;
 
         for(var i=0; i < blocks.length; i++) {
             for(var j=0; j < blocks[i].length; j++) {
@@ -94,7 +92,7 @@ TetrisView.prototype = {
     },
 
     drawFabricBlocks: function(blocks,x,y) {
-        var blockSize = this.data.blockSize;
+        var blockSize = this.game.config.blockSize;
 
         for(var i=0; i < blocks.length; i++) {
             for(var j=0; j < blocks[i].length; j++) {

@@ -3,6 +3,7 @@ function TetrisGame() {
     this.listeners = [];
 	this.data = {};
     this.initWells(this.config.WELL.WIDTH,this.config.WELL.HEIGHT);
+	this.config.blockSize = Math.min(fabricCanvas.width/this.well.width, fabricCanvas.height/this.well.height);
     this.data.nextTetromino = this.newNextTetromino();
     this.newTetromino();
 
@@ -38,7 +39,6 @@ TetrisGame.prototype = {
     },
 
     newNextTetromino: function() {
-		// drawFabricBlocks
         return Tetromino.getTetromino(Math.floor(Math.random()*6),0, Math.floor(Math.random()*(this.well.width-4)),0);
     },
 
@@ -66,8 +66,8 @@ TetrisGame.prototype = {
 
     move: function(direction) {
         if (this.canPlaceInWell(this.tetromino, this.tetromino.x+direction, this.tetromino.y)) {
-            this.tetromino.x+=direction;
-            fabricCanvas.forEachObject(function(obj) { obj.left += 18*direction; });
+            this.tetromino.x += direction;
+            fabricCanvas.forEachObject(function(obj) { obj.left += this.game.config.blockSize*direction; });
             this.notifyWellChanged();
         }
     },
@@ -75,8 +75,8 @@ TetrisGame.prototype = {
     drop: function() {
 		if(!this.data.gameOver) {
 			if (this.canPlaceInWell(this.tetromino, this.tetromino.x, this.tetromino.y + 1)) {
-				this.tetromino.y+=1;
-				fabricCanvas.forEachObject(function(obj) { obj.top += 18; });
+				this.tetromino.y += 1;
+				fabricCanvas.forEachObject(function(obj) { obj.top += this.game.config.blockSize; });
 				this.notifyWellChanged();
 			} else {
 				this.placeInWell(this.tetromino);
@@ -197,7 +197,7 @@ TetrisGame.prototype = {
 		fabricCanvas.forEachObject(function(obj) {
 			fabricCanvas.remove(obj);
 		});
-		var blockSize = Math.min(fabricCanvas.width/this.well.width, fabricCanvas.height/this.well.height);
+		var blockSize = this.config.blockSize;
 		var blocks = tetromino.blocks,
 			x = tetromino.x,
 			y = tetromino.y;

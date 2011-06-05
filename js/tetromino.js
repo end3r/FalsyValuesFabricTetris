@@ -6,6 +6,7 @@ function Tetromino(blocks, x,y) {
 Tetromino.prototype = {
     x:null,
     y:null,
+    blockSize:null,
 
     rotated: function() {
         var old_height = this.blocks.length;
