@@ -29,6 +29,8 @@ TetrisGame.prototype = {
 
         if (this.canPlaceInWell(t, t.x, t.y)) {
             this.tetromino = t;
+			this.fabricRedraw(t);
+	        this.notifyWellChanged();
         } else {
             this.tetromino = null;
 			this.data.gameOver = true;
@@ -36,6 +38,7 @@ TetrisGame.prototype = {
     },
 
     newNextTetromino: function() {
+		// drawFabricBlocks
         return Tetromino.getTetromino(Math.floor(Math.random()*6),0, Math.floor(Math.random()*(this.well.width-4)),0);
     },
 
@@ -46,7 +49,8 @@ TetrisGame.prototype = {
             this.tryPlacingRotated(new_t, old_t, 1) ||
             this.tryPlacingRotated(new_t, old_t, -1) ||
             this.tryPlacingRotated(new_t, old_t, -2)) {
-
+			
+			this.fabricRedraw(new_t);	        
             this.notifyWellChanged();
         }
     },
@@ -63,6 +67,7 @@ TetrisGame.prototype = {
     move: function(direction) {
         if (this.canPlaceInWell(this.tetromino, this.tetromino.x+direction, this.tetromino.y)) {
             this.tetromino.x+=direction;
+            fabricCanvas.forEachObject(function(obj) { obj.left += 18*direction; });
             this.notifyWellChanged();
         }
     },
@@ -71,6 +76,7 @@ TetrisGame.prototype = {
 		if(!this.data.gameOver) {
 			if (this.canPlaceInWell(this.tetromino, this.tetromino.x, this.tetromino.y + 1)) {
 				this.tetromino.y+=1;
+				fabricCanvas.forEachObject(function(obj) { obj.top += 18; });
 				this.notifyWellChanged();
 			} else {
 				this.placeInWell(this.tetromino);
@@ -186,9 +192,30 @@ TetrisGame.prototype = {
             }
         }
     },
-		
-	gameOver: function() {
-		// defined in TetrisView
-	},
+    
+    fabricRedraw: function(tetromino) {
+		fabricCanvas.forEachObject(function(obj) {
+			fabricCanvas.remove(obj);
+		});
+		var blockSize = Math.min(fabricCanvas.width/this.well.width, fabricCanvas.height/this.well.height);
+		var blocks = tetromino.blocks,
+			x = tetromino.x,
+			y = tetromino.y;
+	
+		for(var i=0; i < blocks.length; i++) {
+			for(var j=0; j < blocks[i].length; j++) {
+				if (!blocks[i][j]) continue;
+
+				var rect = new fabric.Rect({
+					top: blockSize*(y+i)+(blockSize/2),
+					left: blockSize*(x+j)+(blockSize/2),
+					width: blockSize,
+					height: blockSize,
+					fill: this.config.WELL.COLORS[blocks[i][j]]
+				});
+				fabricCanvas.add(rect);
+			}
+		}
+    },
 
 0:0};

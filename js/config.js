@@ -15,12 +15,6 @@ function TetrisConfig() {
 				'#00ADEE',
 				'#ED1C24',
 				'#FAA51A'
-			//	'#F171AB',
-			//	'#4E7D0E',
-			//	'#BF404F',
-			//	'#0078A5',
-			//	'#AA1317',
-			//	'#F47A20'
 			]
 		},
 		KEYS: {

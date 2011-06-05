@@ -2,21 +2,25 @@
 <html lang="en-US">
 <head>
 	<meta charset="utf-8">
-	<title>Falsy Fabric Tetris</title>
+	<title>Falsy Values Fabric Tetris</title>
 	<script src="./js/es5.js"></script>
 	<script src="./js/config.js"></script>
 	<script src="./js/tetromino.js"></script>
 	<script src="./js/tetris.js"></script>
 	<script src="./js/view.js"></script>
+	<script src="./js/fabric.min.js"></script>
 	<link rel="stylesheet" href="./style.css" />
 </head>
 <body>
 	<canvas id="tetrisCanvas" width="180" height="360"></canvas>
 	<div id="tetrisContainer"></div>
+	<canvas id="fabricCanvas" width="180" height="360"></canvas>
 	<script>
+		var fabricCanvas = new fabric.Element('fabricCanvas');
 		var game = new TetrisGame();
 		var tetrisCanvas = document.getElementById('tetrisCanvas');
 		new TetrisView(tetrisCanvas, game);
 	</script>
+	<p id="tetrisCredits">Info: this Tetris game was inspired by a Game Development workshop on <a href="">Falsy Values</a> conference. Thanks to <strong>Damian Wielgosik</strong> (<a href="http://twitter.com/varjs">@varjs</a>) and <strong>Paweł Czerski</strong> (<a href="http://twitter.com/czerskip">@czerskip</a>) for organizing the conference, <strong>Kornel Lesiński</strong> (<a href="http://twitter.com/pornelski">@pornelski</a>) and <strong>Peter van der Zee</strong> (<a href="http://twitter.com/kuvos">@kuvos</a>) for the workshop and to <strong>Juriy Zaytsev</strong> (<a href="http://twitter.com/kangax">@kangax</a>) for the <a href="https://github.com/kangax/fabric.js">Fabric.js</a> library.<br /> <strong>Falsy Values Fabric Tetris</strong> is based on the workshop sources, uses Fabris.js library and have fancy Falsy Values design.</p>
 </body>
 </html>

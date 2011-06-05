@@ -145,3 +145,11 @@ canvas#nextTetrominoCanvas {
 	-webkit-border-radius: 10px;
 	border-radius: 10px;
 }
+p#tetrisCredits {
+	margin-top: 20px;
+	font-size: 11px;
+	color: #666;
+}
+p#tetrisCredits a {
+	color: #888;
+}
