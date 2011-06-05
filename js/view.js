@@ -145,7 +145,7 @@ TetrisView.prototype = {
 			message += '<p> Congratulations, You won the game!</p>';
 		}
 		else {
-			message += '<p>Sorry, You lose the game.</p>';
+			message += '<p>Sorry, You lost the game.</p>';
 		}
 		message += '<a href="">Try again?</a>';
     	var resultHTML = '<div id="tetrisBlackbox"></div>' + '<div class="tetrisBox" id="tetrisDialog">'+message+'</div>';
